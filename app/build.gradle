@@ -1,0 +1,99 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
+}
+
+android {
+    compileSdk 31
+
+    defaultConfig {
+        applicationId "io.chaldeaprjkt.gamespace"
+        minSdk 31
+        targetSdk 31
+        versionCode 99
+        versionName "0.1-beta"
+    }
+    signingConfigs {
+        platform {
+            storeFile file("platform.jks")
+            storePassword 'android'
+            keyAlias 'platform'
+            keyPassword 'android'
+        }
+    }
+    buildTypes {
+        debug {
+            debuggable true
+            signingConfig signingConfigs.platform
+        }
+        release {
+            debuggable true
+            signingConfig signingConfigs.platform
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    sourceSets {
+        main {
+            aidl.srcDirs = ['src/main/java']
+        }
+    }
+    lintOptions {
+        disable 'ContentDescription'
+        disable 'QueryAllPackagesPermission'
+        disable 'ProtectedPermissions'
+        disable 'OldTargetApi'
+        disable 'UseCompatLoadingForDrawables'
+        disable 'UnsafeProtectedBroadcastReceiver'
+        disable 'AppCompatCustomView'
+    }
+}
+
+// Hidden-API framework jar (android.view.SurfaceControlFpsListener, ScreenshotHelper, ...).
+// Lookup order: -PframeworkJar=..., env FRAMEWORK_JAR, app/libs/framework.jar, AOSP out/ dir.
+def aospFrameworkJar = "${rootDir}/../../../out/target/common/obj/JAVA_LIBRARIES/framework_intermediates/classes.jar"
+def frameworkClassesJar = [
+        project.findProperty('frameworkJar'),
+        System.getenv('FRAMEWORK_JAR'),
+        "${projectDir}/libs/framework.jar",
+        aospFrameworkJar,
+].find { it && file(it).exists() }
+if (frameworkClassesJar == null) {
+    throw new GradleException("framework.jar not found. Put your ROM's framework classes.jar at app/libs/framework.jar " +
+            "(from out/target/common/obj/JAVA_LIBRARIES/framework_intermediates/classes.jar).")
+}
+
+dependencies {
+    kapt 'com.google.dagger:hilt-compiler:2.40.5'
+
+    compileOnly files(frameworkClassesJar)
+
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'androidx.preference:preference-ktx:1.1.1'
+    implementation 'com.google.android.material:material:1.5.0'
+    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2'
+    implementation 'com.google.dagger:hilt-android:2.40.5'
+    implementation project(path: ':SettingsLibParts')
+}
+
+kapt {
+    correctErrorTypes true
+}
+
+allprojects {
+    gradle.projectsEvaluated {
+        tasks.withType(JavaCompile) {
+            options.compilerArgs.add("-Xbootclasspath/p:$frameworkClassesJar")
+        }
+    }
+}

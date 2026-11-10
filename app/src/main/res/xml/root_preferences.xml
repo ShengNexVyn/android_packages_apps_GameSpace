@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+    Copyright (C) Chaldeaprjkt
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+  -->
+
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+        <com.android.settingslib.widget.IllustrationPreference
+            android:key="game_settings_illustration_video"
+            app:lottie_rawRes="@raw/game_settings_illustration" />
+
+    <PreferenceCategory android:title="In-game">
+        <SwitchPreference
+            android:key="gamespace_heads_up_disabled"
+            android:summary="@string/heads_up_disabled_summary"
+            android:title="@string/heads_up_disabled_title" />
+
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/ringer_mode_entries"
+            android:entryValues="@array/ringer_mode_values"
+            android:key="gamespace_ringer_mode"
+            android:summary="%s"
+            android:title="@string/ringer_mode_title" />
+
+        <!-- persistent:false because it'll be stored to Settings.System directly -->
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="gamespace_suppress_fullscreen_intent"
+            android:persistent="false"
+            android:summary="@string/suppress_fullscreen_intent_summary"
+            android:title="@string/suppress_fullscreen_intent_title" />
+
+        <SwitchPreference
+            android:key="gamespace_auto_brightness_disabled"
+            android:summary="@string/auto_brightness_disabled_summary"
+            android:title="@string/auto_brightness_disabled_title" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="gamespace_tfgesture_disabled"
+            android:summary="@string/three_screenshot_disabled_summary"
+            android:title="@string/three_screenshot_disabled_title" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="gamespace_stay_awake"
+            android:summary="@string/stay_awake_summary"
+            android:title="@string/stay_awake_title" />
+    </PreferenceCategory>
+
+    <io.chaldeaprjkt.gamespace.preferences.AppListPreferences
+        android:key="gamespace_game_list"
+        android:title="@string/game_list_title" />
+
+</PreferenceScreen>
