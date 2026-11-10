@@ -60,12 +60,12 @@ class SystemSettings @Inject constructor(
 
     var threeScreenshot
         get() = Settings.System.getIntForUser(
-            resolver, Settings.System.THREE_FINGER_GESTURE, 0,
+            resolver, SettingKeys.THREE_FINGER_GESTURE, 0,
             UserHandle.USER_CURRENT
         ) == 1
         set(it) {
             Settings.System.putIntForUser(
-                resolver, Settings.System.THREE_FINGER_GESTURE,
+                resolver, SettingKeys.THREE_FINGER_GESTURE,
                 it.toInt(), UserHandle.USER_CURRENT
             )
         }
@@ -73,14 +73,14 @@ class SystemSettings @Inject constructor(
     var suppressFullscreenIntent
         get() = Settings.System.getIntForUser(
             resolver,
-            Settings.System.GAMESPACE_SUPPRESS_FULLSCREEN_INTENT,
+            SettingKeys.GAMESPACE_SUPPRESS_FULLSCREEN_INTENT,
             0,
             UserHandle.USER_CURRENT
         ) == 1
         set(it) {
             Settings.System.putIntForUser(
                 resolver,
-                Settings.System.GAMESPACE_SUPPRESS_FULLSCREEN_INTENT,
+                SettingKeys.GAMESPACE_SUPPRESS_FULLSCREEN_INTENT,
                 it.toInt(),
                 UserHandle.USER_CURRENT
             )
@@ -89,7 +89,7 @@ class SystemSettings @Inject constructor(
     var userGames
         get() =
             Settings.System.getStringForUser(
-                resolver, Settings.System.GAMESPACE_GAME_LIST,
+                resolver, SettingKeys.GAMESPACE_GAME_LIST,
                 UserHandle.USER_CURRENT
             )
                 ?.split(";")
@@ -98,7 +98,7 @@ class SystemSettings @Inject constructor(
         set(games) {
             Settings.System.putStringForUser(
                 resolver,
-                Settings.System.GAMESPACE_GAME_LIST,
+                SettingKeys.GAMESPACE_GAME_LIST,
                 if (games.isEmpty()) "" else
                     games.joinToString(";") { it.toString() },
                 UserHandle.USER_CURRENT
