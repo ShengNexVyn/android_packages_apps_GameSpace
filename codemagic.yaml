@@ -2,20 +2,28 @@ workflows:
   android-release:
     name: NexPlay Android (Release APK - signed)
     max_build_duration: 60
-    instance_type: mac_mini_m2
+    # Untuk native Android, linux_x86_64 biasanya lebih cepat & murah, 
+    # tapi tetap pakai mac_mini_m2 di sini sesuai versi aslinya.
+    instance_type: mac_mini_m2 
     environment:
-      flutter: stable
+      java: 17 # Sesuaikan dengan versi Java di project kamu (biasanya 11 atau 17)
       vars:
         PACKAGE_NAME: "vloxa.gamespace.app"
     cache:
       cache_paths:
-        - ~/.pub-cache
+        - ~/.gradle/caches
+        - ~/.gradle/wrapper
     scripts:
-      - name: Get Flutter packages
+      - name: Set up local.properties
         script: |
-          flutter pub get
-      - name: Build Release APK (signed, split per ABI)
+          echo "sdk.dir=$ANDROID_SDK_ROOT" > "$CM_BUILD_DIR/local.properties"
+      - name: Make gradlew executable
         script: |
-          flutter build apk --release --split-per-abi --no-tree-shake-icons
+          chmod +x ./gradlew
+      - name: Build Release APK
+        script: |
+          # Perintah ini akan mem-build APK Release. 
+          # Jika project kamu pakai split per ABI, konfigurasinya harus diset di build.gradle
+          ./gradlew assembleRelease
     artifacts:
-      - build/app/outputs/flutter-apk/*.apk
+      - app/build/outputs/apk/release/*.apk
